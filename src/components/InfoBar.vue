@@ -19,11 +19,12 @@ const toggleVisibility = () => {
 </script>
 
 <template>
-  <footer v-if="isVisible" class="w-full bg-gray-800 text-gray-100 text-sm p-2 flex justify-between items-center">
-    <div>
+  <footer v-if="isVisible"
+    class="w-full bg-gray-800 text-gray-100 text-[12px] px-2 py-1 flex justify-between items-center">
+    <div class="max-w-1/2">
       {{ props.stats.words }} words • {{ props.stats.lines }} lines • Ln {{ props.stats.ln }}, Col {{ props.stats.col }}
     </div>
-    <div class="flex items-center space-x-4">
+    <div class="flex items-center space-x-4 max-w-1/2 px-2">
       <div>
         HTML {{ props.stats.characters }} characters • {{ props.stats.words }} words • {{ props.stats.paragraphs }}
         paragraphs
