@@ -1,7 +1,20 @@
 <script setup lang="ts">
-import { marked } from 'marked'
 import { ref, computed, watch } from 'vue'
+import { Marked } from "marked";
+import { markedHighlight } from "marked-highlight";
+import hljs from 'highlight.js';
 import InfoBar from './InfoBar.vue'
+
+const marked = new Marked(
+  markedHighlight({
+    emptyLangClass: 'hljs',
+    langPrefix: 'hljs language-',
+    highlight(code, lang) {
+      const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+      return hljs.highlight(code, { language }).value;
+    }
+  })
+);
 
 const markdown = ref('## Start writing your Markdown here...\n')
 const preview = ref(marked.parse(markdown.value))
