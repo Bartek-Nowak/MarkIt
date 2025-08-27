@@ -1,39 +1,41 @@
-# MarkIt
+# MarkIt – Markdown Editor with Syntax Highlighting
 
-This template should help get you started developing with Vue 3 in Vite.
+MarkIt is a simple web-based Markdown editor built with **Vue 3**, **TailwindCSS**, **Marked**, and **Highlight.js**.  
+It supports live preview, syntax highlighting, and a mobile-friendly layout.
 
-## Recommended IDE Setup
+## Features
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- Live Markdown preview with syntax highlighting
+- Mobile-responsive editor with flexible layout
+- Download Markdown as `.md` file
+- Light/dark theme support via Highlight.js themes
+- Word, line, and character count
 
-## Type Support for `.vue` Imports in TS
+## Installation
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+Clone the repository:
 
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
+```bash
+git clone https://github.com/Bartek-Nowak/MarkIt.git
+cd markit
 ```
 
-### Compile and Hot-Reload for Development
+## Running
 
-```sh
+Start the development server:
+
+```bash
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+## Technologies
 
-```sh
-npm run build
-```
+- Vue 3
+- TailwindCSS
+- Marked
+- marked-highlight
+- Highlight.js
 
-### Lint with [ESLint](https://eslint.org/)
+## License
 
-```sh
-npm run lint
-```
+MIT License
