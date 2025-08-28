@@ -5,6 +5,21 @@ import { saveAs } from 'file-saver'
 import { useFileDialog } from '@vueuse/core'
 import { HTML_BEGIN, HTML_END } from '../constants';
 import { useTabsStore } from '@/stores/tabs'
+import {
+  Menubar,
+  MenubarCheckboxItem,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarRadioGroup,
+  MenubarRadioItem,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarSub,
+  MenubarSubContent,
+  MenubarSubTrigger,
+  MenubarTrigger,
+} from "@/components/ui/menubar"
 
 const tabsStore = useTabsStore()
 
@@ -107,20 +122,21 @@ onChange(async (files) => {
 </script>
 
 <template>
-  <div class="w-full bg-gray-800 text-gray-100 p-2 flex items-center justify-between">
-    <div class="flex items-center space-x-2">
-      <button @click="tabsStore.exportTabs" class="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-xs">
-        Save Project
-      </button>
-      <button @click="() => open()" class="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-xs">
-        Load Project
-      </button>
-      <button @click="downloadMarkdown" class="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-xs">
-        Download Markdown
-      </button>
-      <button @click="downloadHTMLZip" class="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-xs">
-        Download HTML
-      </button>
-    </div>
-  </div>
+  <Menubar>
+    <MenubarMenu>
+      <MenubarTrigger>File</MenubarTrigger>
+      <MenubarContent>
+        <MenubarItem @click="tabsStore.exportTabs">Save Project</MenubarItem>
+        <MenubarItem @click="() => open()">Load Project</MenubarItem>
+        <MenubarSeparator />
+        <MenubarSub>
+          <MenubarSubTrigger>Export to</MenubarSubTrigger>
+          <MenubarSubContent>
+            <MenubarItem @click="downloadMarkdown">Markdown</MenubarItem>
+            <MenubarItem @click="downloadHTMLZip">HTML</MenubarItem>
+          </MenubarSubContent>
+        </MenubarSub>
+      </MenubarContent>
+    </MenubarMenu>
+  </Menubar>
 </template>
