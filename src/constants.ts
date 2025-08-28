@@ -16,7 +16,14 @@ hljs.highlightAll();
 </body>
 </html>`
 
-export const EXAMPLE_MD = `# Sample Markdown File
+export const EXAMPLE_MD = `## ⚡ Markdown Slash Menu Quick Tip ⚡
+
+💡 **Tip:** Type '/' on an empty line to open the Markdown Slash Menu.
+Use **Arrow keys** to navigate, **Enter** to insert, and **Escape** or **click outside** to close it.
+
+---
+
+# Sample Markdown File
 
 This is a **sample Markdown** file that contains various elements for testing.
 
