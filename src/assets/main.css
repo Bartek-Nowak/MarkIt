@@ -6,6 +6,8 @@
 @custom-variant dark (&:is(.dark *));
 @source inline("/prose(-.*)?/");
 @source "../components/constants.ts";
+@source inline("overflow-y-auto");
+
 :root {
   --background: oklch(0.9383 0.0042 236.4993);
   --foreground: oklch(0.3211 0 0);

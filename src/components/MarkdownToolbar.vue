@@ -71,7 +71,7 @@ const generateTOC = () => {
     .join('\n');
 
   return `
-    <nav id="toc" class="fixed top-0 left-0 p-4 max-w-xs prose prose-slate">
+    <nav id="toc" class="fixed top-0 left-0 p-4 max-w-xs prose prose-slate overflow-y-auto max-h-full">
       <ul class="list-none p-0 text-sm">
         ${tocHtml}
       </ul>
