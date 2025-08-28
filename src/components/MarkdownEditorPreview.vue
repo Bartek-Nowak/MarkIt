@@ -1,24 +1,31 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
-import { Marked } from "marked";
-import { markedHighlight } from "marked-highlight";
-import hljs from 'highlight.js';
+import { computed, ref, watch } from 'vue'
+import { Marked } from "marked"
+import { markedHighlight } from "marked-highlight"
+import hljs from 'highlight.js'
 import InfoBar from './InfoBar.vue'
 import MarkdownToolbar from './MarkdownToolbar.vue'
-import { TabManager } from './tab-manager';
+import { TabManager } from './tab-manager'
+import { useTabsStore } from '@/stores/tabs'
+
+const tabsStore = useTabsStore()
 
 const marked = new Marked(
   markedHighlight({
     emptyLangClass: 'hljs',
     langPrefix: 'hljs language-',
     highlight(code, lang) {
-      const language = hljs.getLanguage(lang) ? lang : 'plaintext';
-      return hljs.highlight(code, { language }).value;
+      const language = hljs.getLanguage(lang) ? lang : 'plaintext'
+      return hljs.highlight(code, { language }).value
     }
   })
 )
 
-const markdown = ref('')
+const markdown = computed({
+  get: () => tabsStore.activeTab.markdown,
+  set: (val: string) => { tabsStore.activeTab.markdown = val }
+})
+
 const preview = ref<string>('')
 
 const parseMarkdown = async (md: string) => {
@@ -26,11 +33,7 @@ const parseMarkdown = async (md: string) => {
   preview.value = typeof html === 'string' ? html : await html
 }
 
-parseMarkdown(markdown.value)
-
-watch(markdown, (newVal) => {
-  parseMarkdown(newVal)
-})
+watch(markdown, (newVal) => parseMarkdown(newVal), { immediate: true })
 
 const stats = computed(() => {
   const lines = markdown.value.split('\n')
@@ -54,7 +57,7 @@ const stats = computed(() => {
 <template>
   <main class="h-screen w-screen flex flex-col">
     <MarkdownToolbar :markdown="markdown" />
-    <TabManager v-model:markdown="markdown" />
+    <TabManager />
     <div class="flex flex-1 flex-col md:flex-row overflow-auto">
       <textarea id="markdown-editor" name="markdown" v-model="markdown" placeholder="Enter Markdown here..."
         class="w-full md:w-1/2 p-4 border-b md:border-b-0 md:border-r bg-gray-100 border-gray-300 resize-none focus:outline-none flex-1"></textarea>
