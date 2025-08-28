@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { Marked } from 'marked'
+import JSZip from 'jszip'
+import { saveAs } from 'file-saver'
 import { HTML_BEGIN, HTML_END } from './constants';
 import { useTabsStore } from '@/stores/tabs'
 
@@ -16,26 +18,24 @@ const downloadMarkdown = () => {
   a.href = URL.createObjectURL(blob)
   a.download = `${filename}.md`
   a.click()
+  URL.revokeObjectURL(a.href)
 }
 
-const downloadHTML = async () => {
+const downloadHTMLZip = async () => {
+  const zip = new JSZip()
+  const filenameBase = tabsStore.activeTab.title.replace(/\s+/g, '_')
+
   const marked = new Marked()
   const htmlContent = await marked.parse(tabsStore.activeTab.markdown)
   const fullHTML = HTML_BEGIN + htmlContent + HTML_END
+  zip.file(`${filenameBase}.html`, fullHTML)
 
-  const htmlBlob = new Blob([fullHTML], { type: 'text/html' })
-  const htmlUrl = URL.createObjectURL(htmlBlob)
-  const a1 = document.createElement('a')
-  a1.href = htmlUrl
-  a1.download = `${tabsStore.activeTab.title.replace(/\s+/g, '_')}.html`
-  a1.click()
-  URL.revokeObjectURL(htmlUrl)
+  const cssResponse = await fetch('/style.css')
+  const cssText = await cssResponse.text()
+  zip.file('style.css', cssText)
 
-  const cssUrl = '/style.css'
-  const a2 = document.createElement('a')
-  a2.href = cssUrl
-  a2.download = 'style.css'
-  a2.click()
+  const content = await zip.generateAsync({ type: 'blob' })
+  saveAs(content, `${filenameBase}.zip`)
 }
 </script>
 
@@ -43,10 +43,10 @@ const downloadHTML = async () => {
   <div class="w-full bg-gray-800 text-gray-100 p-2 flex items-center justify-between">
     <div class="flex items-center space-x-2">
       <button @click="downloadMarkdown" class="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-xs">
-        Download .md
+        Download Markdown
       </button>
-      <button @click="downloadHTML" class="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-xs">
-        Download .html
+      <button @click="downloadHTMLZip" class="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-xs">
+        Download HTML
       </button>
     </div>
   </div>
