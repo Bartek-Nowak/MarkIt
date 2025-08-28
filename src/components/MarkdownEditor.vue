@@ -109,10 +109,9 @@ const insertSnippet = (snippet: string) => {
 </script>
 
 <template>
-  <div
-    class="w-full md:w-1/2 p-4 border-b md:border-b-0 md:border-r bg-gray-100 border-gray-300 resize-none focus:outline-none flex-1 relative">
+  <div class="w-full md:w-1/2 flex-1 relative">
     <textarea ref="textarea" v-model="model" @keydown="handleKeydown"
-      class="w-full h-full p-4 bg-gray-100 resize-none focus:outline-none" />
+      class="w-full h-full p-4 bg-gray-100 border-b md:border-b-0 border-gray-300 md:border-r resize-none focus:outline-none" />
 
     <div v-if="showSlashMenu" ref="menuWrapper"
       class="absolute bottom-0 right-0 bg-white border rounded shadow-lg w-60 z-10">
