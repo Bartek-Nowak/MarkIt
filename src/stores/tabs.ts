@@ -38,5 +38,32 @@ export const useTabsStore = defineStore('tabs', () => {
     }
   }
 
-  return { tabs, activeTab, setActive, addTab, removeTab }
+  const exportTabs = () => {
+    const data = JSON.stringify(tabs, null, 2)
+    const blob = new Blob([data], { type: 'application/json' })
+    const a = document.createElement('a')
+    a.href = URL.createObjectURL(blob)
+    a.download = 'tabs-export.json'
+    a.click()
+    URL.revokeObjectURL(a.href)
+  }
+
+  const importTabs = (json: string) => {
+    try {
+      const imported: TabItem[] = JSON.parse(json)
+      if (!Array.isArray(imported)) throw new Error('Invalid JSON structure')
+      imported.forEach((tab, i) => {
+        if (!tab.id) tab.id = i + 1
+        if (typeof tab.active !== 'boolean') tab.active = false
+        if (!tab.title) tab.title = `Tab ${i + 1}`
+        if (!tab.markdown) tab.markdown = ''
+      })
+      tabs.splice(0, tabs.length, ...imported)
+      if (!tabs.some((t) => t.active)) tabs[0].active = true
+    } catch (e) {
+      console.error('Failed to import tabs JSON:', e)
+    }
+  }
+
+  return { tabs, activeTab, setActive, addTab, removeTab, exportTabs, importTabs }
 })

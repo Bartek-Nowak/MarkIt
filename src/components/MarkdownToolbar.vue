@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { Marked } from 'marked'
-import JSZip from 'jszip'
+import JSZip, { file } from 'jszip'
 import { saveAs } from 'file-saver'
+import { useFileDialog } from '@vueuse/core'
 import { HTML_BEGIN, HTML_END } from '../constants';
 import { useTabsStore } from '@/stores/tabs'
 
 const tabsStore = useTabsStore()
+
+const { open, onChange } = useFileDialog({ accept: '.json', multiple: false })
+
 
 defineProps<{
   markdown: string
@@ -86,11 +90,31 @@ ${HTML_END}`;
   const content = await zip.generateAsync({ type: 'blob' });
   saveAs(content, `${filenameBase}.zip`);
 };
+
+onChange(async (files) => {
+  if (files && files.length > 0) {
+    const file = files[0]
+    try {
+      const text = await file.text()
+      tabsStore.importTabs(text)
+      console.log('Import successful')
+    } catch (e) {
+      console.error('Failed to read file', e)
+    }
+  }
+})
+
 </script>
 
 <template>
   <div class="w-full bg-gray-800 text-gray-100 p-2 flex items-center justify-between">
     <div class="flex items-center space-x-2">
+      <button @click="tabsStore.exportTabs" class="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-xs">
+        Save Project
+      </button>
+      <button @click="() => open()" class="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-xs">
+        Load Project
+      </button>
       <button @click="downloadMarkdown" class="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-xs">
         Download Markdown
       </button>
