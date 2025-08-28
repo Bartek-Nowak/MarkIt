@@ -2,3 +2,4 @@
 @plugin "@tailwindcss/typography";
 @import 'highlight.js/styles/atom-one-dark.css';
 @source inline("/prose(-.*)?/");
+@source "../components/constants.ts";

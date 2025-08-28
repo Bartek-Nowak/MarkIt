@@ -6,11 +6,9 @@ export const HTML_BEGIN = `<!DOCTYPE html>
 <link href="style.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/atom-one-dark.min.css">
 </head>
-<body class="p-4 bg-gray-100 flex justify-center">
-<article class="prose prose-pre:bg-[#282c34]">`
+<body class="p-4 bg-gray-100 flex justify-center">`
 
-export const HTML_END = `</article>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js">
+export const HTML_END = `<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js">
 </script>
 <script>
 hljs.highlightAll();

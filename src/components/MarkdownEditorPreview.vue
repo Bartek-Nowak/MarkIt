@@ -56,7 +56,7 @@ const stats = computed(() => {
 
 <template>
   <main class="h-screen w-screen flex flex-col">
-    <MarkdownToolbar :markdown="markdown" />
+    <MarkdownToolbar :markdown="markdown" :html="preview" />
     <TabManager />
     <div class="flex flex-1 flex-col md:flex-row overflow-auto">
       <textarea id="markdown-editor" name="markdown" v-model="markdown" placeholder="Enter Markdown here..."
