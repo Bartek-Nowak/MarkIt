@@ -1,3 +1,4 @@
+import { EXAMPLE_MD } from '@/constants'
 import { defineStore } from 'pinia'
 import { reactive, computed } from 'vue'
 
@@ -9,7 +10,9 @@ export interface TabItem {
 }
 
 export const useTabsStore = defineStore('tabs', () => {
-  const tabs = reactive<TabItem[]>([{ id: 1, title: 'Index', active: true, markdown: '' }])
+  const tabs = reactive<TabItem[]>([
+    { id: 1, title: 'Example', active: true, markdown: EXAMPLE_MD },
+  ])
 
   const activeTab = computed(() => tabs.find((t) => t.active)!)
 

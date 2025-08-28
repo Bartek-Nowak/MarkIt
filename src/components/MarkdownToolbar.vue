@@ -2,7 +2,7 @@
 import { Marked } from 'marked'
 import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
-import { HTML_BEGIN, HTML_END } from './constants';
+import { HTML_BEGIN, HTML_END } from '../constants';
 import { useTabsStore } from '@/stores/tabs'
 
 const tabsStore = useTabsStore()
@@ -52,7 +52,7 @@ const generateTOC = () => {
     .join('\n');
 
   return `
-    <nav id="toc" class="fixed top-0 left-0 p-4 max-w-xs prose prose-slate bg-white rounded shadow">
+    <nav id="toc" class="fixed top-0 left-0 p-4 max-w-xs prose prose-slate">
       <ul class="list-none p-0 text-sm">
         ${tocHtml}
       </ul>
