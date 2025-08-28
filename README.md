@@ -28,6 +28,18 @@ Start the development server:
 npm run dev
 ```
 
+## Building Tailwind CSS
+
+First, download the Tailwind CLI executable from [Tailwind CSS Releases](https://github.com/tailwindlabs/tailwindcss/releases) for your system.
+
+Then, generate the Tailwind CSS for the project:
+
+```bash
+./tailwindcss -i ./src/assets/main.css -o ./public/style.css --minify
+```
+
+This will create a minified `style.css` in the `public` folder, replacing any existing file, with all the styles used in the project.
+
 ## Technologies
 
 - Vue 3
