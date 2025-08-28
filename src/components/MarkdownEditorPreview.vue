@@ -5,6 +5,7 @@ import { markedHighlight } from "marked-highlight";
 import hljs from 'highlight.js';
 import InfoBar from './InfoBar.vue'
 import MarkdownToolbar from './MarkdownToolbar.vue'
+import { TabManager } from './tab-manager';
 
 const marked = new Marked(
   markedHighlight({
@@ -17,7 +18,7 @@ const marked = new Marked(
   })
 )
 
-const markdown = ref('## Start writing your Markdown here...\n')
+const markdown = ref('')
 const preview = ref<string>('')
 
 const parseMarkdown = async (md: string) => {
@@ -53,13 +54,13 @@ const stats = computed(() => {
 <template>
   <main class="h-screen w-screen flex flex-col">
     <MarkdownToolbar :markdown="markdown" />
-
+    <TabManager v-model:markdown="markdown" />
     <div class="flex flex-1 flex-col md:flex-row overflow-auto">
       <textarea id="markdown-editor" name="markdown" v-model="markdown" placeholder="Enter Markdown here..."
         class="w-full md:w-1/2 p-4 border-b md:border-b-0 md:border-r bg-gray-100 border-gray-300 resize-none focus:outline-none flex-1"></textarea>
 
       <div class="w-full md:w-1/2 p-4 bg-gray-100 flex justify-center flex-1 overflow-auto">
-        <article class="prose prose-pre:bg-[#282c34] w-full max-w-full" v-html="preview"></article>
+        <article class="prose prose-pre:bg-[#282c34]" v-html="preview"></article>
       </div>
     </div>
 
