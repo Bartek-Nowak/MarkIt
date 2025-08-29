@@ -1,20 +1,16 @@
 <script setup lang="ts">
 import { Marked } from 'marked'
-import JSZip, { file } from 'jszip'
-import { saveAs } from 'file-saver'
+import JSZip from 'jszip'
 import { useFileDialog } from '@vueuse/core'
-import { HTML_BEGIN, HTML_END } from '../constants'
+import { saveFile } from '@/utils/saveFile'
 import { useTabsStore } from '@/stores/tabs'
+import { HTML_BEGIN, HTML_END } from '../constants'
 import {
   Menubar,
-  MenubarCheckboxItem,
   MenubarContent,
   MenubarItem,
   MenubarMenu,
-  MenubarRadioGroup,
-  MenubarRadioItem,
   MenubarSeparator,
-  MenubarShortcut,
   MenubarSub,
   MenubarSubContent,
   MenubarSubTrigger,
@@ -29,14 +25,9 @@ defineProps<{
   markdown: string
 }>()
 
-const downloadMarkdown = () => {
+const downloadMarkdown = async () => {
   const filename = tabsStore.activeTab.title.replace(/\s+/g, '_')
-  const blob = new Blob([tabsStore.activeTab.markdown], { type: 'text/markdown' })
-  const a = document.createElement('a')
-  a.href = URL.createObjectURL(blob)
-  a.download = `${filename}.md`
-  a.click()
-  URL.revokeObjectURL(a.href)
+  await saveFile(filename, tabsStore.activeTab.markdown, 'markdown')
 }
 
 const tocItems: { depth: number; escapedText: string; text: string }[] = []
@@ -101,8 +92,7 @@ ${HTML_END}`
   const cssText = await cssResponse.text()
   zip.file('style.css', cssText)
 
-  const content = await zip.generateAsync({ type: 'blob' })
-  saveAs(content, `${filenameBase}.zip`)
+  await saveFile(filenameBase, zip, 'zip')
 }
 
 onChange(async (files) => {

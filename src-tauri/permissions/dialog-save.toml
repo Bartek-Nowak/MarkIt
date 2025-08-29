@@ -1,0 +1,7 @@
+[[permission]]
+identifier = "dialog-save"
+description = "Allows the use of dialog.save from frontend."
+
+commands.allow = [
+  "save"
+]

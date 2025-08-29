@@ -1,0 +1,15 @@
+# src-tauri/permissions/fs-desktop-write.toml
+[[permission]]
+identifier = "fs-desktop-write"
+description = "Allow writing files to Desktop using fs plugin"
+
+# pozwalamy na korzystanie z komend zapisu
+commands.allow = [
+  "create",
+  "write",
+  "writeFile"
+]
+
+# ograniczamy scope do Desktop
+[[scope.allow]]
+path = "$DESKTOP/*"
