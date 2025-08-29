@@ -1,4 +1,5 @@
 import { EXAMPLE_MD } from '@/constants'
+import { saveFile } from '@/utils/saveFile'
 import { defineStore } from 'pinia'
 import { reactive, computed } from 'vue'
 
@@ -38,14 +39,9 @@ export const useTabsStore = defineStore('tabs', () => {
     }
   }
 
-  const exportTabs = () => {
+  const exportTabs = async () => {
     const data = JSON.stringify(tabs, null, 2)
-    const blob = new Blob([data], { type: 'application/json' })
-    const a = document.createElement('a')
-    a.href = URL.createObjectURL(blob)
-    a.download = 'tabs-export.json'
-    a.click()
-    URL.revokeObjectURL(a.href)
+    await saveFile('tabs-export', data, 'json')
   }
 
   const importTabs = (json: string) => {

@@ -6,29 +6,30 @@ import { saveAs } from 'file-saver'
 export const isTauri = () => '__TAURI_INTERNALS__' in window
 
 type FileContent = string | JSZip
-type FileType = 'markdown' | 'zip'
+type FileType = 'markdown' | 'json' | 'zip'
 
 export const saveFile = async (filename: string, content: FileContent, type: FileType) => {
+  const ext = type === 'markdown' ? 'md' : type === 'json' ? 'json' : 'zip'
+  const mime =
+    type === 'markdown' ? 'text/markdown' : type === 'json' ? 'application/json' : 'application/zip'
+
   if (isTauri()) {
-    const defaultExt = type === 'markdown' ? 'md' : 'zip'
     const path = await save({
-      defaultPath: `${filename}.${defaultExt}`,
+      defaultPath: `${filename}.${ext}`,
       filters: [
-        { name: type.toUpperCase(), extensions: [defaultExt] },
+        { name: type.toUpperCase(), extensions: [ext] },
         { name: 'All Files', extensions: ['*'] },
       ],
     })
-
     if (!path) return
 
     let data: Uint8Array
     if (type === 'zip' && content instanceof JSZip) {
-      const blob = await content.generateAsync({ type: 'uint8array' })
-      data = blob
+      data = await content.generateAsync({ type: 'uint8array' })
     } else if (typeof content === 'string') {
       data = new TextEncoder().encode(content)
     } else {
-      throw new Error('Invalid content type')
+      throw new Error('Invalid content type for Tauri')
     }
 
     const file = await create(path)
@@ -39,15 +40,14 @@ export const saveFile = async (filename: string, content: FileContent, type: Fil
       const blob = await content.generateAsync({ type: 'blob' })
       saveAs(blob, `${filename}.zip`)
     } else if (typeof content === 'string') {
-      const mime = type === 'markdown' ? 'text/markdown' : 'application/octet-stream'
-      const blob = new Blob([content], { type: mime })
+      const blob = new Blob([content], { type })
       const a = document.createElement('a')
       a.href = URL.createObjectURL(blob)
-      a.download = `${filename}.${type === 'markdown' ? 'md' : 'bin'}`
+      a.download = `${filename}.${ext}`
       a.click()
       URL.revokeObjectURL(a.href)
     } else {
-      throw new Error('Invalid content type for web fallback')
+      throw new Error('Invalid content type for web')
     }
   }
 }
