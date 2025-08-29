@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, nextTick, watch, onMounted, onBeforeUnmount } from 'vue'
+import { ref, nextTick, watch, onMounted, onBeforeUnmount, computed } from 'vue'
 import { items } from './slashMenu'
 
 const model = defineModel<string>()
@@ -31,12 +31,22 @@ watch(showSlashMenu, (visible) => {
       if (!menu.value) return
       const li = menu.value.children[0] as HTMLElement
       if (!li) return
-
       menuHeight.value = li.offsetHeight * 3
       menu.value.scrollTop = 0
       menu.value.focus()
     })
   }
+})
+
+const currentLine = computed(() => {
+  if (!textarea.value) return ''
+  const { selectionStart } = textarea.value
+  const before = (model.value ?? '').slice(0, selectionStart)
+  return before.split('\n').pop() ?? ''
+})
+
+watch(currentLine, () => {
+  selectedIndex.value = 0
 })
 
 const handleKeydown = (e: KeyboardEvent) => {
@@ -53,31 +63,48 @@ const handleKeydown = (e: KeyboardEvent) => {
   if (e.key === 'Escape') showSlashMenu.value = false
 }
 
+const query = ref('')
+
 const handleMenuKeydown = (e: KeyboardEvent) => {
-  if (e.key === 'ArrowDown') {
-    selectedIndex.value = (selectedIndex.value + 1) % items.length
+  if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+    query.value += e.key
+    selectedIndex.value = 0
+    e.preventDefault()
+  } else if (e.key === 'Backspace') {
+    query.value = query.value.slice(0, -1)
+    selectedIndex.value = 0
+    e.preventDefault()
+  } else if (e.key === 'ArrowDown') {
+    selectedIndex.value = (selectedIndex.value + 1) % filteredItems.value.length
     e.preventDefault()
   } else if (e.key === 'ArrowUp') {
-    selectedIndex.value = (selectedIndex.value - 1 + items.length) % items.length
+    selectedIndex.value = (selectedIndex.value - 1 + filteredItems.value.length) % filteredItems.value.length
     e.preventDefault()
   } else if (e.key === 'Enter') {
-    insertSnippet(items[selectedIndex.value].snippet)
+    insertSnippet(filteredItems.value[selectedIndex.value].snippet)
     e.preventDefault()
   } else if (e.key === 'Escape') {
     showSlashMenu.value = false
+    query.value = ''
     nextTick(() => textarea.value?.focus())
   }
 }
+
+const filteredItems = computed(() => {
+  if (!query.value) return items
+  const q = query.value.toLowerCase()
+  return items
+    .filter(item => item.label.toLowerCase().startsWith(q))
+    .sort((a, b) => a.label.toLowerCase().indexOf(q) - b.label.toLowerCase().indexOf(q))
+})
 
 watch(selectedIndex, () => {
   nextTick(() => {
     if (!menu.value) return
     const activeItem = menu.value.children[selectedIndex.value] as HTMLElement
     if (!activeItem) return
-
     const menuRect = menu.value.getBoundingClientRect()
     const itemRect = activeItem.getBoundingClientRect()
-
     if (itemRect.bottom > menuRect.bottom) {
       menu.value.scrollTop += itemRect.bottom - menuRect.bottom
     } else if (itemRect.top < menuRect.top) {
@@ -91,19 +118,16 @@ const insertSnippet = (snippet: string) => {
   const start = textarea.value.selectionStart
   const end = textarea.value.selectionEnd
   model.value = (model.value ?? '').slice(0, start) + snippet + (model.value ?? '').slice(end)
-
   const cursorPos = start + snippet.length
   nextTick(() => {
     if (!textarea.value) return
     textarea.value.focus()
     textarea.value.selectionStart = cursorPos
     textarea.value.selectionEnd = cursorPos
-
     const lineHeight = parseInt(getComputedStyle(textarea.value).lineHeight) || 20
     const beforeCursor = textarea.value.value.slice(0, cursorPos).split('\n').length
     textarea.value.scrollTop = Math.max(0, (beforeCursor - 3) * lineHeight)
   })
-
   showSlashMenu.value = false
 }
 </script>
@@ -117,7 +141,7 @@ const insertSnippet = (snippet: string) => {
       class="absolute right-0 bottom-0 z-10 w-60 rounded border bg-white shadow-lg">
       <ul ref="menu" tabindex="0" @keydown="handleMenuKeydown" class="overflow-auto outline-none"
         :style="{ maxHeight: menuHeight + 'px' }">
-        <li v-for="(item, i) in items" :key="i"
+        <li v-for="(item, i) in filteredItems" :key="i"
           :class="['cursor-pointer p-2', i === selectedIndex ? 'bg-gray-200' : 'hover:bg-gray-100']"
           @click="insertSnippet(item.snippet)">
           {{ item.label }}
