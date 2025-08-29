@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { Marked } from 'marked'
 import { markedHighlight } from 'marked-highlight'
 import hljs from 'highlight.js'
+import { open } from '@tauri-apps/plugin-shell';
 import { useTabsStore } from '@/stores/tabs'
 import InfoBar from './InfoBar.vue'
 import MarkdownToolbar from './MarkdownToolbar.vue'
 import { TabManager } from './tab-manager'
 import MarkdownEditor from './MarkdownEditor.vue'
+import { isTauri } from '@/utils/saveFile';
 
 const tabsStore = useTabsStore()
 
@@ -55,6 +57,34 @@ const stats = computed(() => {
     col: colNumber,
   }
 })
+
+const previewRef = ref<HTMLDivElement | null>(null);
+
+const handleExternalLinks = async (event: MouseEvent) => {
+  const target = event.target as HTMLElement;
+  if (target.tagName !== 'A') return;
+
+  const anchor = target as HTMLAnchorElement;
+  if (!anchor.href) return;
+
+  event.preventDefault();
+
+  if (isTauri()) {
+    await open(anchor.href);
+  } else {
+    window.open(anchor.href, '_blank', 'noopener,noreferrer');
+  }
+};
+
+onMounted(() => {
+  nextTick(() => {
+    previewRef.value?.addEventListener('click', handleExternalLinks);
+  });
+});
+
+onBeforeUnmount(() => {
+  previewRef.value?.removeEventListener('click', handleExternalLinks);
+});
 </script>
 
 <template>
@@ -65,7 +95,7 @@ const stats = computed(() => {
       <MarkdownEditor v-model="markdown" />
 
       <div class="flex w-full flex-1 justify-center overflow-auto bg-primary-foreground p-4 md:w-1/2">
-        <article class="prose prose-pre:bg-[#282c34] w-full" v-html="preview"></article>
+        <article ref="previewRef" class="prose prose-pre:bg-[#282c34] w-full" v-html="preview"></article>
       </div>
     </div>
 
