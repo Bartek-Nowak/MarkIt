@@ -61,10 +61,10 @@ const stats = computed(() => {
   <main class="flex h-screen w-screen flex-col">
     <MarkdownToolbar :markdown="markdown" :html="preview" />
     <TabManager />
-    <div class="flex flex-1 flex-col overflow-hidden md:flex-row">
+    <div class="flex flex-1 flex-col overflow-hidden md:flex-row border shadow">
       <MarkdownEditor v-model="markdown" />
 
-      <div class="flex w-full flex-1 justify-center overflow-auto bg-gray-100 p-4 md:w-1/2">
+      <div class="flex w-full flex-1 justify-center overflow-auto bg-primary-foreground p-4 md:w-1/2">
         <article class="prose prose-pre:bg-[#282c34]" v-html="preview"></article>
       </div>
     </div>

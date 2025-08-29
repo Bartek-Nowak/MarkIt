@@ -19,10 +19,8 @@ const toggleVisibility = () => {
 </script>
 
 <template>
-  <footer
-    v-if="isVisible"
-    class="flex w-full items-center justify-between bg-gray-800 px-2 py-1 text-[12px] text-gray-100"
-  >
+  <footer v-if="isVisible"
+    class="flex w-full items-center justify-between bg-background px-2 py-1 text-[12px] text-foreground">
     <div class="max-w-1/2">
       {{ props.stats.words }} words • {{ props.stats.lines }} lines • Ln {{ props.stats.ln }}, Col
       {{ props.stats.col }}
@@ -33,20 +31,14 @@ const toggleVisibility = () => {
         {{ props.stats.paragraphs }}
         paragraphs
       </div>
-      <button
-        @click="toggleVisibility"
-        class="rounded bg-gray-700 px-2 py-1 text-xs text-white hover:bg-gray-600"
-      >
+      <button @click="toggleVisibility" class="rounded bg-gray-700 px-2 py-1 text-xs text-white hover:bg-gray-600">
         ▲
       </button>
     </div>
   </footer>
 
-  <button
-    v-else
-    @click="toggleVisibility"
-    class="fixed right-2 bottom-2 rounded bg-gray-800 px-2 py-1 text-xs text-white hover:bg-gray-700"
-  >
+  <button v-else @click="toggleVisibility"
+    class="fixed right-2 bottom-2 rounded bg-gray-800 px-2 py-1 text-xs text-white hover:bg-gray-700">
     ▼
   </button>
 </template>
