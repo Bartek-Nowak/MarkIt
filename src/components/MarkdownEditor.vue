@@ -115,19 +115,23 @@ watch(selectedIndex, () => {
 
 const insertSnippet = (snippet: string) => {
   if (!textarea.value) return
+
   const start = textarea.value.selectionStart
   const end = textarea.value.selectionEnd
+
+  const previousScrollTop = textarea.value.scrollTop
+
   model.value = (model.value ?? '').slice(0, start) + snippet + (model.value ?? '').slice(end)
   const cursorPos = start + snippet.length
+
   nextTick(() => {
     if (!textarea.value) return
     textarea.value.focus()
     textarea.value.selectionStart = cursorPos
     textarea.value.selectionEnd = cursorPos
-    const lineHeight = parseInt(getComputedStyle(textarea.value).lineHeight) || 20
-    const beforeCursor = textarea.value.value.slice(0, cursorPos).split('\n').length
-    textarea.value.scrollTop = Math.max(0, (beforeCursor - 3) * lineHeight)
+    textarea.value.scrollTop = previousScrollTop
   })
+
   showSlashMenu.value = false
 }
 </script>
