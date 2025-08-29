@@ -21,7 +21,7 @@ watch(markdown, (val) => {
 </script>
 
 <template>
-  <div class="flex gap-1 bg-gray-800 px-1 pt-1 overflow-x-auto">
+  <div class="flex gap-1 bg-gray-800 pt-1 overflow-x-auto">
     <Tab v-for="tab in tabsStore.tabs" :key="tab.id" :id="tab.id" v-model:title="tab.title" :active="tab.active"
       :canRemove="tabsStore.tabs.length > 1" @click="tabsStore.setActive(tab.id)" @remove="tabsStore.removeTab" />
     <button @click="tabsStore.addTab()" class="flex items-center justify-center px-3 py-1 rounded-t-lg border border-b-0
