@@ -27,6 +27,7 @@ onBeforeUnmount(() => {
 
 watch(showSlashMenu, (visible) => {
   if (visible) {
+    query.value = ''
     nextTick(() => {
       if (!menu.value) return
       const li = menu.value.children[0] as HTMLElement
