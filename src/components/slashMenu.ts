@@ -12,7 +12,7 @@ export const items = [
   { label: 'Blockquote', snippet: '> Quote' },
 
   { label: 'Inline code', snippet: '`code`' },
-  { label: 'Code block (js)', snippet: '```\n```' },
+  { label: 'Code block', snippet: '```\n```' },
 
   { label: 'Bold', snippet: '**bold**' },
   { label: 'Italic', snippet: '_italic_' },

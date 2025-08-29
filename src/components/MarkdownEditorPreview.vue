@@ -65,7 +65,7 @@ const stats = computed(() => {
       <MarkdownEditor v-model="markdown" />
 
       <div class="flex w-full flex-1 justify-center overflow-auto bg-primary-foreground p-4 md:w-1/2">
-        <article class="prose prose-pre:bg-[#282c34]" v-html="preview"></article>
+        <article class="prose prose-pre:bg-[#282c34] w-full" v-html="preview"></article>
       </div>
     </div>
 
