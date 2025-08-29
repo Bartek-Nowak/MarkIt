@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, nextTick, watch, onMounted, onBeforeUnmount } from "vue"
-import { items } from "./slashMenu"
+import { ref, nextTick, watch, onMounted, onBeforeUnmount } from 'vue'
+import { items } from './slashMenu'
 
 const model = defineModel<string>()
 const textarea = ref<HTMLTextAreaElement | null>(null)
@@ -18,11 +18,11 @@ const handleClickOutside = (event: MouseEvent) => {
 }
 
 onMounted(() => {
-  document.addEventListener("click", handleClickOutside)
+  document.addEventListener('click', handleClickOutside)
 })
 
 onBeforeUnmount(() => {
-  document.removeEventListener("click", handleClickOutside)
+  document.removeEventListener('click', handleClickOutside)
 })
 
 watch(showSlashMenu, (visible) => {
@@ -40,30 +40,30 @@ watch(showSlashMenu, (visible) => {
 })
 
 const handleKeydown = (e: KeyboardEvent) => {
-  if (e.key === "/") {
+  if (e.key === '/') {
     const { selectionStart } = e.target as HTMLTextAreaElement
-    const before = (model.value ?? "").slice(0, selectionStart)
-    const lastLine = before.split("\n").pop() || ""
-    if (lastLine.trim() === "") {
+    const before = (model.value ?? '').slice(0, selectionStart)
+    const lastLine = before.split('\n').pop() || ''
+    if (lastLine.trim() === '') {
       showSlashMenu.value = true
       selectedIndex.value = 0
       e.preventDefault()
     }
   }
-  if (e.key === "Escape") showSlashMenu.value = false
+  if (e.key === 'Escape') showSlashMenu.value = false
 }
 
 const handleMenuKeydown = (e: KeyboardEvent) => {
-  if (e.key === "ArrowDown") {
+  if (e.key === 'ArrowDown') {
     selectedIndex.value = (selectedIndex.value + 1) % items.length
     e.preventDefault()
-  } else if (e.key === "ArrowUp") {
+  } else if (e.key === 'ArrowUp') {
     selectedIndex.value = (selectedIndex.value - 1 + items.length) % items.length
     e.preventDefault()
-  } else if (e.key === "Enter") {
+  } else if (e.key === 'Enter') {
     insertSnippet(items[selectedIndex.value].snippet)
     e.preventDefault()
-  } else if (e.key === "Escape") {
+  } else if (e.key === 'Escape') {
     showSlashMenu.value = false
     nextTick(() => textarea.value?.focus())
   }
@@ -90,7 +90,7 @@ const insertSnippet = (snippet: string) => {
   if (!textarea.value) return
   const start = textarea.value.selectionStart
   const end = textarea.value.selectionEnd
-  model.value = (model.value ?? "").slice(0, start) + snippet + (model.value ?? "").slice(end)
+  model.value = (model.value ?? '').slice(0, start) + snippet + (model.value ?? '').slice(end)
 
   const cursorPos = start + snippet.length
   nextTick(() => {
@@ -100,7 +100,7 @@ const insertSnippet = (snippet: string) => {
     textarea.value.selectionEnd = cursorPos
 
     const lineHeight = parseInt(getComputedStyle(textarea.value).lineHeight) || 20
-    const beforeCursor = textarea.value.value.slice(0, cursorPos).split("\n").length
+    const beforeCursor = textarea.value.value.slice(0, cursorPos).split('\n').length
     textarea.value.scrollTop = Math.max(0, (beforeCursor - 3) * lineHeight)
   })
 
@@ -109,17 +109,32 @@ const insertSnippet = (snippet: string) => {
 </script>
 
 <template>
-  <div class="w-full md:w-1/2 flex-1 relative">
-    <textarea ref="textarea" v-model="model" @keydown="handleKeydown"
-      class="w-full h-full p-4 bg-gray-100 border-b md:border-b-0 border-gray-300 md:border-r resize-none focus:outline-none" />
+  <div class="relative w-full flex-1 md:w-1/2">
+    <textarea
+      ref="textarea"
+      v-model="model"
+      @keydown="handleKeydown"
+      class="h-full w-full resize-none border-b border-gray-300 bg-gray-100 p-4 focus:outline-none md:border-r md:border-b-0"
+    />
 
-    <div v-if="showSlashMenu" ref="menuWrapper"
-      class="absolute bottom-0 right-0 bg-white border rounded shadow-lg w-60 z-10">
-      <ul ref="menu" tabindex="0" @keydown="handleMenuKeydown" class="outline-none overflow-auto"
-        :style="{ maxHeight: menuHeight + 'px' }">
-        <li v-for="(item, i) in items" :key="i"
-          :class="['p-2 cursor-pointer', i === selectedIndex ? 'bg-gray-200' : 'hover:bg-gray-100']"
-          @click="insertSnippet(item.snippet)">
+    <div
+      v-if="showSlashMenu"
+      ref="menuWrapper"
+      class="absolute right-0 bottom-0 z-10 w-60 rounded border bg-white shadow-lg"
+    >
+      <ul
+        ref="menu"
+        tabindex="0"
+        @keydown="handleMenuKeydown"
+        class="overflow-auto outline-none"
+        :style="{ maxHeight: menuHeight + 'px' }"
+      >
+        <li
+          v-for="(item, i) in items"
+          :key="i"
+          :class="['cursor-pointer p-2', i === selectedIndex ? 'bg-gray-200' : 'hover:bg-gray-100']"
+          @click="insertSnippet(item.snippet)"
+        >
           {{ item.label }}
         </li>
       </ul>

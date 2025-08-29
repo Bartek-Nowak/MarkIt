@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { Marked } from "marked"
-import { markedHighlight } from "marked-highlight"
+import { Marked } from 'marked'
+import { markedHighlight } from 'marked-highlight'
 import hljs from 'highlight.js'
 import { useTabsStore } from '@/stores/tabs'
 import InfoBar from './InfoBar.vue'
@@ -18,13 +18,15 @@ const marked = new Marked(
     highlight(code, lang) {
       const language = hljs.getLanguage(lang) ? lang : 'plaintext'
       return hljs.highlight(code, { language }).value
-    }
-  })
+    },
+  }),
 )
 
 const markdown = computed({
   get: () => tabsStore.activeTab.markdown,
-  set: (val: string) => { tabsStore.activeTab.markdown = val }
+  set: (val: string) => {
+    tabsStore.activeTab.markdown = val
+  },
 })
 
 const preview = ref<string>('')
@@ -38,9 +40,9 @@ watch(markdown, (newVal) => parseMarkdown(newVal), { immediate: true })
 
 const stats = computed(() => {
   const lines = markdown.value.split('\n')
-  const words = markdown.value.split(/\s+/).filter(w => w).length
+  const words = markdown.value.split(/\s+/).filter((w) => w).length
   const characters = markdown.value.length
-  const paragraphs = markdown.value.split(/\n\n+/).filter(p => p).length
+  const paragraphs = markdown.value.split(/\n\n+/).filter((p) => p).length
   const lineNumber = lines.length
   const colNumber = lines[lines.length - 1]?.length || 0
 
@@ -50,19 +52,19 @@ const stats = computed(() => {
     characters,
     paragraphs,
     ln: lineNumber,
-    col: colNumber
+    col: colNumber,
   }
 })
 </script>
 
 <template>
-  <main class="h-screen w-screen flex flex-col">
+  <main class="flex h-screen w-screen flex-col">
     <MarkdownToolbar :markdown="markdown" :html="preview" />
     <TabManager />
-    <div class="flex flex-1 flex-col md:flex-row overflow-hidden">
+    <div class="flex flex-1 flex-col overflow-hidden md:flex-row">
       <MarkdownEditor v-model="markdown" />
 
-      <div class="w-full md:w-1/2 p-4 bg-gray-100 flex justify-center flex-1 overflow-auto">
+      <div class="flex w-full flex-1 justify-center overflow-auto bg-gray-100 p-4 md:w-1/2">
         <article class="prose prose-pre:bg-[#282c34]" v-html="preview"></article>
       </div>
     </div>
