@@ -25,7 +25,7 @@ watch(markdown, (val) => {
     <Tab v-for="tab in tabsStore.tabs" :key="tab.id" :id="tab.id" v-model:title="tab.title" :active="tab.active"
       :canRemove="tabsStore.tabs.length > 1" @click="tabsStore.setActive(tab.id)" @remove="tabsStore.removeTab" />
     <button @click="tabsStore.addTab()"
-      class="flex items-center justify-center rounded-t-lg border border-b-0 px-3 py-1 text-foreground transition-colors hover:bg-secondary-foreground hover:text-primary-foreground shadow">
+      class="flex items-center justify-center rounded-t-lg border border-b-0 px-3 py-1 text-foreground transition-colors hover:bg-muted hover:text-foreground shadow">
       +
     </button>
   </div>

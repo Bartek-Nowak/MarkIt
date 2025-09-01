@@ -140,15 +140,17 @@ const insertSnippet = (snippet: string) => {
 <template>
   <div class="relative w-full flex-1 md:w-1/2">
     <textarea ref="textarea" v-model="model" @keydown="handleKeydown"
-      class="h-full w-full resize-none border-b border-gray-300 bg-primary-foreground p-4 focus:outline-none md:border-r md:border-b-0" />
+      class="h-full w-full resize-none border-b border-border bg-background px-4 py-2 text-foreground focus:outline-none md:border-r md:border-b-0" />
 
     <div v-if="showSlashMenu" ref="menuWrapper"
-      class="absolute right-0 bottom-0 z-10 w-60 rounded border bg-white shadow-lg">
-      <ul ref="menu" tabindex="0" @keydown="handleMenuKeydown" class="overflow-auto outline-none"
-        :style="{ maxHeight: menuHeight + 'px' }">
-        <li v-for="(item, i) in filteredItems" :key="i"
-          :class="['cursor-pointer p-2', i === selectedIndex ? 'bg-gray-200' : 'hover:bg-gray-100']"
-          @click="insertSnippet(item.snippet)">
+      class="absolute right-0 bottom-0 z-10 w-60 rounded border bg-popover shadow-lg">
+      <ul ref="menu" tabindex="0" @keydown="handleMenuKeydown" class="max-h-60 overflow-auto outline-none">
+        <li v-for="(item, i) in filteredItems" :key="i" :class="[
+          'cursor-pointer px-3 py-2 rounded text-sm transition-colors',
+          i === selectedIndex
+            ? 'bg-primary text-primary-foreground'
+            : 'hover:bg-muted hover:text-foreground'
+        ]" @click="insertSnippet(item.snippet)">
           {{ item.label }}
         </li>
       </ul>
