@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { Marked } from 'marked'
 import JSZip from 'jszip'
 import { useFileDialog } from '@vueuse/core'
 import { saveFile } from '@/utils/saveFile'
 import { useTabsStore } from '@/stores/tabs'
-import { HTML_BEGIN, HTML_END } from '../constants'
+import { useSettingsStore } from '@/stores/settingsStore'
+import { HTML_BEGIN, HTML_END, THEMES } from '../constants'
 import {
   Menubar,
   MenubarContent,
@@ -16,6 +18,16 @@ import {
   MenubarSubTrigger,
   MenubarTrigger,
 } from '@/components/ui/menubar'
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import SettingItem from './SettingItem.vue'
+import { Button } from '@/components/ui/button'
 
 const tabsStore = useTabsStore()
 
@@ -107,24 +119,65 @@ onChange(async (files) => {
     }
   }
 })
+
+const settingsStore = useSettingsStore()
+const settings = settingsStore.settings
+
+const selectedCategory = ref('')
+
+
 </script>
 
 <template>
-  <Menubar>
-    <MenubarMenu>
-      <MenubarTrigger>File</MenubarTrigger>
-      <MenubarContent>
-        <MenubarItem @click="tabsStore.exportTabs">Save Project</MenubarItem>
-        <MenubarItem @click="() => open()">Load Project</MenubarItem>
-        <MenubarSeparator />
-        <MenubarSub>
-          <MenubarSubTrigger>Export to</MenubarSubTrigger>
-          <MenubarSubContent>
-            <MenubarItem @click="downloadMarkdown">Markdown</MenubarItem>
-            <MenubarItem @click="downloadHTMLZip">HTML</MenubarItem>
-          </MenubarSubContent>
-        </MenubarSub>
-      </MenubarContent>
-    </MenubarMenu>
-  </Menubar>
+  <Dialog>
+    <Menubar>
+      <MenubarMenu>
+        <MenubarTrigger>File</MenubarTrigger>
+        <MenubarContent>
+          <MenubarItem @click="tabsStore.exportTabs">Save Project</MenubarItem>
+          <MenubarItem @click="() => open()">Load Project</MenubarItem>
+          <MenubarSeparator />
+          <MenubarSub>
+            <MenubarSubTrigger>Export to</MenubarSubTrigger>
+            <MenubarSubContent>
+              <MenubarItem @click="downloadMarkdown">Markdown</MenubarItem>
+              <MenubarItem @click="downloadHTMLZip">HTML</MenubarItem>
+            </MenubarSubContent>
+          </MenubarSub>
+        </MenubarContent>
+      </MenubarMenu>
+      <MenubarMenu>
+        <MenubarTrigger>Settings</MenubarTrigger>
+        <MenubarContent>
+          <DialogTrigger asChild>
+            <MenubarItem @click="selectedCategory = Object.keys(settings)[0]">Open Settings</MenubarItem>
+          </DialogTrigger>
+        </MenubarContent>
+      </MenubarMenu>
+    </Menubar>
+    <DialogContent class="px-0">
+      <DialogHeader class="px-4 py-2 border-b">
+        <DialogTitle>Settings</DialogTitle>
+      </DialogHeader>
+
+      <div class="flex h-[500px]">
+        <div class="w-1/3 border-r bg-background text-foreground overflow-auto">
+          <ul>
+            <li v-for="cat in Object.keys(settings)" @click="selectedCategory = cat" :class="{
+              'bg-primary text-primary-foreground': selectedCategory === cat,
+              'hover:bg-muted cursor-pointer': selectedCategory !== cat
+            }" class="px-4 py-2 select-none capitalize"> {{ cat }} </li>
+          </ul>
+        </div>
+        <div class="flex-1 p-4 overflow-auto bg-background text-foreground">
+          <SettingItem v-for="key in Object.keys(settings[selectedCategory])" :key="key" :label="key"
+            v-model="settings[selectedCategory][key]" :options="key === 'theme' ? THEMES : undefined" />
+        </div>
+      </div>
+
+      <DialogFooter class="px-4 py-2 border-t flex justify-end">
+        <Button>Close</Button>
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
 </template>

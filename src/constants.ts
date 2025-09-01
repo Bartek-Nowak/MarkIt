@@ -118,3 +118,5 @@ const MAX_RETRIES: number = 5;
 - [x] Task 1
 - [ ] Task 2
 - [ ] Task 3`
+
+export const THEMES = ['light', 'dark']

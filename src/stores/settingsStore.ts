@@ -19,7 +19,7 @@ export const useSettingsStore = defineStore('settings', () => {
 
   watch(settings, () => {
     save()
-    if (settings.theme) applyTheme(settings.theme)
+    if (settings.appearance.theme) applyTheme(settings.appearance.theme)
   })
 
   const applyTheme = (theme: string) => {
