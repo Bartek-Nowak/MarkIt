@@ -6,6 +6,7 @@ const model = defineModel<string>()
 const textarea = ref<HTMLTextAreaElement | null>(null)
 const menu = ref<HTMLUListElement | null>(null)
 const menuWrapper = ref<HTMLDivElement | null>(null)
+const lineNumbers = ref<HTMLDivElement | null>(null)
 
 const showSlashMenu = ref(false)
 const selectedIndex = ref(0)
@@ -25,6 +26,19 @@ onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside)
 })
 
+// --- numeracja linii ---
+const lines = computed(() => {
+  return (model.value ?? '').split('\n').map((_, i) => i + 1)
+})
+
+
+
+const syncScroll = () => {
+  if (!textarea.value || !lineNumbers.value) return
+  lineNumbers.value.scrollTop = textarea.value.scrollTop
+}
+
+// --- slash menu ---
 watch(showSlashMenu, (visible) => {
   if (visible) {
     query.value = ''
@@ -138,18 +152,19 @@ const insertSnippet = (snippet: string) => {
 </script>
 
 <template>
-  <div class="relative w-full h-full">
-    <textarea ref="textarea" v-model="model" @keydown="handleKeydown"
-      class="h-full w-full resize-none border-b border-border bg-background px-4 py-2 text-foreground focus:outline-none md:border-r md:border-b-0" />
-
+  <div class="relative w-full h-full flex">
+    <div ref="lineNumbers"
+      class="select-none text-right pr-2 text-muted-foreground flex flex-col overflow-hidden leading-6 p-2">
+      <div v-for="line in lines" :key="line">{{ line }}</div>
+    </div>
+    <textarea ref="textarea" v-model="model" @scroll="syncScroll" @keydown="handleKeydown"
+      class="flex-1 resize-none border-b border-border bg-background px-2 py-2 text-foreground focus:outline-none overflow-auto leading-6"></textarea>
     <div v-if="showSlashMenu" ref="menuWrapper"
       class="absolute right-0 bottom-0 z-10 w-60 rounded border bg-popover shadow-lg">
       <ul ref="menu" tabindex="0" @keydown="handleMenuKeydown" class="max-h-60 overflow-auto outline-none">
         <li v-for="(item, i) in filteredItems" :key="i" :class="[
           'cursor-pointer px-3 py-2 rounded text-sm transition-colors',
-          i === selectedIndex
-            ? 'bg-primary text-primary-foreground'
-            : 'hover:bg-muted hover:text-foreground'
+          i === selectedIndex ? 'bg-primary text-primary-foreground' : 'hover:bg-muted hover:text-foreground'
         ]" @click="insertSnippet(item.snippet)">
           {{ item.label }}
         </li>
