@@ -10,8 +10,6 @@ type FileType = 'markdown' | 'json' | 'zip'
 
 export const saveFile = async (filename: string, content: FileContent, type: FileType) => {
   const ext = type === 'markdown' ? 'md' : type === 'json' ? 'json' : 'zip'
-  const mime =
-    type === 'markdown' ? 'text/markdown' : type === 'json' ? 'application/json' : 'application/zip'
 
   if (isTauri()) {
     const path = await save({
@@ -33,15 +31,18 @@ export const saveFile = async (filename: string, content: FileContent, type: Fil
     }
 
     const file = await create(path)
+
     await file.write(data)
     await file.close()
   } else {
     if (type === 'zip' && content instanceof JSZip) {
       const blob = await content.generateAsync({ type: 'blob' })
+
       saveAs(blob, `${filename}.zip`)
     } else if (typeof content === 'string') {
       const blob = new Blob([content], { type })
       const a = document.createElement('a')
+
       a.href = URL.createObjectURL(blob)
       a.download = `${filename}.${ext}`
       a.click()
