@@ -10,6 +10,11 @@ import MarkdownToolbar from './MarkdownToolbar.vue'
 import { TabManager } from './tab-manager'
 import MarkdownEditor from './MarkdownEditor.vue'
 import { isTauri } from '@/utils/saveFile';
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from '@/components/ui/resizable'
 
 const tabsStore = useTabsStore()
 
@@ -92,11 +97,17 @@ onBeforeUnmount(() => {
     <MarkdownToolbar :markdown="markdown" :html="preview" />
     <TabManager />
     <div class="flex flex-1 flex-col overflow-hidden md:flex-row border shadow">
-      <MarkdownEditor v-model="markdown" />
-
-      <div class="flex w-full flex-1 justify-center overflow-auto bg-white p-4 md:w-1/2">
-        <article ref="previewRef" class="prose prose-pre:bg-[#282c34] w-full" v-html="preview"></article>
-      </div>
+      <ResizablePanelGroup direction="horizontal">
+        <ResizablePanel :min-size="20">
+          <MarkdownEditor v-model="markdown" />
+        </ResizablePanel>
+        <ResizableHandle />
+        <ResizablePanel :min-size="20">
+          <div class="flex w-full h-full justify-center bg-white p-4 overflow-auto">
+            <article ref="previewRef" class="prose prose-pre:bg-[#282c34] w-full" v-html="preview"></article>
+          </div>
+        </ResizablePanel>
+      </ResizablePanelGroup>
     </div>
 
     <InfoBar :stats="stats" />

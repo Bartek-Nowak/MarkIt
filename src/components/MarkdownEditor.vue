@@ -138,7 +138,7 @@ const insertSnippet = (snippet: string) => {
 </script>
 
 <template>
-  <div class="relative w-full flex-1 md:w-1/2">
+  <div class="relative w-full h-full">
     <textarea ref="textarea" v-model="model" @keydown="handleKeydown"
       class="h-full w-full resize-none border-b border-border bg-background px-4 py-2 text-foreground focus:outline-none md:border-r md:border-b-0" />
 
