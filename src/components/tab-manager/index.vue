@@ -62,9 +62,9 @@ watch(
 
 <template>
   <div class="flex items-end gap-2 overflow-x-auto pt-1" ref="container">
-    <div class="flex gap-2 bg-background">
-      <div v-for="{ slotId, itemId, item: tab } in slottedItems" :key="slotId" :data-swapy-slot="slotId">
-        <div v-if="tab" :data-swapy-item="itemId" :key="itemId">
+    <div class="flex gap-2 bg-background h-full">
+      <div v-for="{ slotId, itemId, item: tab } in slottedItems" :key="slotId" :data-swapy-slot="slotId" class="flex">
+        <div v-if="tab" class="flex" :data-swapy-item="itemId" :key="itemId">
           <Tab :id="tab.id" v-model:title="tab.title" :active="tab.active" :canRemove="tabsStore.tabs.length > 1"
             @click="tabsStore.setActive(tab.id)" @remove="tabsStore.removeTab" />
         </div>
