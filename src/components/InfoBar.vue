@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { ChevronDown, ChevronUp } from "lucide-vue-next"
+import { Button } from './ui/button'
 
 interface Stats {
   lines: number
@@ -30,14 +32,13 @@ const toggleVisibility = () => {
         HTML {{ props.stats.characters }} characters • {{ props.stats.words }} words • {{ props.stats.paragraphs }}
         paragraphs
       </div>
-      <button @click="toggleVisibility" class="rounded bg-muted px-2 py-1 text-xs text-foreground hover:bg-muted/80">
-        ▲
-      </button>
+      <Button @click="toggleVisibility" variant="ghost" size="icon">
+        <ChevronUp />
+      </Button>
     </div>
   </footer>
 
-  <button v-else @click="toggleVisibility"
-    class="fixed right-2 bottom-2 rounded bg-muted px-2 py-1 text-xs text-foreground hover:bg-muted/80">
-    ▼
-  </button>
+  <Button v-else @click="toggleVisibility" class="fixed right-4 bottom-2" variant="ghost" size="icon">
+    <ChevronDown />
+  </Button>
 </template>
