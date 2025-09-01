@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 import { reactive, computed } from 'vue'
 
 export interface TabItem {
-  id: number
+  id: string
   title: string
   active: boolean
   markdown: string
@@ -12,30 +12,31 @@ export interface TabItem {
 
 export const useTabsStore = defineStore('tabs', () => {
   const tabs = reactive<TabItem[]>([
-    { id: 1, title: 'Example', active: true, markdown: EXAMPLE_MD },
+    { id: '1', title: 'Example', active: true, markdown: EXAMPLE_MD },
   ])
 
   const activeTab = computed(() => tabs.find((t) => t.active)!)
 
-  const setActive = (id: number) => {
+  const setActive = (id: string) => {
     tabs.forEach((t) => (t.active = t.id === id))
   }
 
   const addTab = (title = 'New Tab') => {
-    const newId = tabs.length ? Math.max(...tabs.map((t) => t.id)) + 1 : 1
+    const newId = tabs.length ? (Math.max(...tabs.map((t) => Number(t.id))) + 1).toString() : '1'
     tabs.push({ id: newId, title, active: false, markdown: '' })
     setActive(newId)
   }
 
-  const removeTab = (id: number) => {
+  const removeTab = (id: string) => {
     if (tabs.length <= 1) return
     const index = tabs.findIndex((t) => t.id === id)
     if (index === -1) return
+
     const wasActive = tabs[index].active
     tabs.splice(index, 1)
+
     if (wasActive && tabs.length > 0) {
-      const newActiveIndex = index > 0 ? index - 1 : 0
-      tabs.forEach((t, i) => (t.active = i === newActiveIndex))
+      tabs[Math.max(0, index - 1)].active = true
     }
   }
 
@@ -49,7 +50,7 @@ export const useTabsStore = defineStore('tabs', () => {
       const imported: TabItem[] = JSON.parse(json)
       if (!Array.isArray(imported)) throw new Error('Invalid JSON structure')
       imported.forEach((tab, i) => {
-        if (!tab.id) tab.id = i + 1
+        if (!tab.id) tab.id = (i + 1).toString()
         if (typeof tab.active !== 'boolean') tab.active = false
         if (!tab.title) tab.title = `Tab ${i + 1}`
         if (!tab.markdown) tab.markdown = ''

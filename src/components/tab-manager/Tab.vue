@@ -2,13 +2,13 @@
 import { ref, watch } from 'vue'
 
 const props = defineProps<{
-  id: number
+  id: string
   active?: boolean
   canRemove?: boolean
 }>()
 
 const emit = defineEmits<{
-  (e: 'remove', id: number): void
+  (e: 'remove', id: string): void
 }>()
 
 const title = defineModel<string>('title', { default: 'Untitled' })
@@ -57,10 +57,11 @@ const remove = () => {
     <input v-else id="tab-edit-input" v-model="inputValue" @blur="stopEditing" @keyup.enter="stopEditing"
       class="flex-1 border-none bg-transparent text-center text-sm text-foreground outline-none" />
 
-    <button @click.stop="remove" class="ml-2 text-foreground/70 transition-colors hover:text-foreground" :class="{
-      'opacity-100 group-hover:opacity-100': canRemove,
-      'invisible opacity-0': !canRemove,
-    }">
+    <button data-swapy-no-drag @click.stop="remove"
+      class="ml-2 text-foreground/70 transition-colors hover:text-foreground" :class="{
+        'opacity-100 group-hover:opacity-100': canRemove,
+        'invisible opacity-0': !canRemove,
+      }">
       ✕
     </button>
   </div>
