@@ -32,13 +32,13 @@ const toggleVisibility = () => {
         HTML {{ props.stats.characters }} characters • {{ props.stats.words }} words • {{ props.stats.paragraphs }}
         paragraphs
       </div>
-      <Button @click="toggleVisibility" variant="ghost" size="icon">
+      <Button @click="toggleVisibility" variant="ghost" size="icon" class="size-6">
         <ChevronUp />
       </Button>
     </div>
   </footer>
 
-  <Button v-else @click="toggleVisibility" class="fixed right-4 bottom-2" variant="ghost" size="icon">
+  <Button v-else @click="toggleVisibility" class="fixed right-4 bottom-2 size-6" variant="ghost" size="icon">
     <ChevronDown />
   </Button>
 </template>
