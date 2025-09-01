@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, nextTick, watch, onMounted, onBeforeUnmount, computed } from 'vue'
+import { useSettingsStore } from '@/stores/settingsStore'
 import { items } from './slashMenu'
 
 const model = defineModel<string>()
@@ -7,6 +8,8 @@ const textarea = ref<HTMLTextAreaElement | null>(null)
 const menu = ref<HTMLUListElement | null>(null)
 const menuWrapper = ref<HTMLDivElement | null>(null)
 const lineNumbers = ref<HTMLDivElement | null>(null)
+
+const settingsStore = useSettingsStore()
 
 const showSlashMenu = ref(false)
 const selectedIndex = ref(0)
@@ -26,19 +29,15 @@ onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside)
 })
 
-// --- numeracja linii ---
 const lines = computed(() => {
   return (model.value ?? '').split('\n').map((_, i) => i + 1)
 })
-
-
 
 const syncScroll = () => {
   if (!textarea.value || !lineNumbers.value) return
   lineNumbers.value.scrollTop = textarea.value.scrollTop
 }
 
-// --- slash menu ---
 watch(showSlashMenu, (visible) => {
   if (visible) {
     query.value = ''
@@ -153,7 +152,7 @@ const insertSnippet = (snippet: string) => {
 
 <template>
   <div class="relative w-full h-full flex">
-    <div ref="lineNumbers"
+    <div v-show="settingsStore.settings.editor.showLineNumbers" ref="lineNumbers"
       class="select-none text-right pr-2 text-muted-foreground flex flex-col overflow-hidden leading-6 p-2">
       <div v-for="line in lines" :key="line">{{ line }}</div>
     </div>

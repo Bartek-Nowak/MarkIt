@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { camelCaseToLabel } from '@/utils/format'
 import { Switch } from '@/components/ui/switch'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
@@ -20,7 +21,7 @@ const model = defineModel<string | number | boolean>()
 
 <template>
   <label class="flex items-center justify-between mb-2">
-    <span class="capitalize">{{ label }}</span>
+    <span class="capitalize">{{ camelCaseToLabel(label) }}</span>
 
     <Switch v-if="typeof model === 'boolean'" v-model="model" />
 
