@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/menubar'
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -176,7 +177,9 @@ const selectedCategory = ref('')
       </div>
 
       <DialogFooter class="px-4 py-2 border-t flex justify-end">
-        <Button>Close</Button>
+        <DialogClose asChild>
+          <Button>Close</Button>
+        </DialogClose>
       </DialogFooter>
     </DialogContent>
   </Dialog>
