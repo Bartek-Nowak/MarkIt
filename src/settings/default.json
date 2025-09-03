@@ -3,6 +3,7 @@
     "theme": "dark"
   },
   "editor": {
-    "showLineNumbers": true
+    "showLineNumbers": true,
+    "showSampleMarkdown": true
   }
 }

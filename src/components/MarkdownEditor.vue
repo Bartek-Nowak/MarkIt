@@ -152,7 +152,7 @@ const insertSnippet = (snippet: string) => {
 
 <template>
   <div class="relative w-full h-full flex">
-    <div v-show="settingsStore.settings.editor.showLineNumbers" ref="lineNumbers"
+    <div v-show="settingsStore.settings?.editor?.showLineNumbers" ref="lineNumbers"
       class="select-none text-right pr-2 text-muted-foreground flex flex-col overflow-hidden leading-6 p-2">
       <div v-for="line in lines" :key="line">{{ line }}</div>
     </div>

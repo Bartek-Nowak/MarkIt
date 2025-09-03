@@ -1,7 +1,8 @@
-import { EXAMPLE_MD } from '@/constants'
-import { saveFile } from '@/utils/saveFile'
-import { defineStore } from 'pinia'
 import { reactive, computed } from 'vue'
+import { defineStore } from 'pinia'
+import { useSettingsStore } from './settingsStore'
+import { saveFile } from '@/utils/saveFile'
+import { EXAMPLE_MD } from '@/constants'
 
 export interface TabItem {
   id: string
@@ -11,9 +12,19 @@ export interface TabItem {
 }
 
 export const useTabsStore = defineStore('tabs', () => {
-  const tabs = reactive<TabItem[]>([
-    { id: '1', title: 'Example', active: true, markdown: EXAMPLE_MD },
-  ])
+  const settingsStore = useSettingsStore()
+  const tabs = reactive<TabItem[]>([{ id: '1', title: 'New Tab', active: true, markdown: '' }])
+
+  const initTabs = () => {
+    const showSample = settingsStore.settings?.editor?.showSampleMarkdown ?? false
+    tabs.splice(
+      0,
+      tabs.length,
+      ...(showSample
+        ? [{ id: '1', title: 'Example', active: true, markdown: EXAMPLE_MD }]
+        : [{ id: '1', title: 'New Tab', active: true, markdown: '' }]),
+    )
+  }
 
   const activeTab = computed(() => tabs.find((t) => t.active)!)
 
@@ -62,5 +73,5 @@ export const useTabsStore = defineStore('tabs', () => {
     }
   }
 
-  return { tabs, activeTab, setActive, addTab, removeTab, exportTabs, importTabs }
+  return { tabs, activeTab, initTabs, setActive, addTab, removeTab, exportTabs, importTabs }
 })
